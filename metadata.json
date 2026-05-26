@@ -1,0 +1,6 @@
+{
+  "name": "Swift Eco Blox",
+  "description": "An interactive, 3D animated product showcase for Swift Eco Blox - Autoclaved Aerated Concrete (AAC) blocks by Swift Industries.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
