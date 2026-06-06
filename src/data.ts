@@ -77,12 +77,7 @@ export const TOOL_KIT: ToolItem[] = [
     iconName: "PenTool",
     useCase: "Seals vertical and horizontal joint gaps beautifully"
   },
-  {
-    name: "Saw Guide Frame",
-    description: "Guides a saw along 90-degree lines to guarantee perfectly straight blocks cuts on site.",
-    iconName: "Maximize",
-    useCase: "Eliminates wavy edges during manual resizing"
-  },
+
   {
     name: "Angle Grinder",
     description: "Allows clean and swift routing of channels for running electric pipes and plumbing pipes.",

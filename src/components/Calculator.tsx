@@ -13,6 +13,7 @@ import {
   ChevronRight
 } from 'lucide-react';
 import { STANDARD_SIZES } from '../data';
+import Building3D from './Building3D';
 
 export default function Calculator() {
   const [area, setArea] = useState<number>(1000); // 1000 sq ft standard wall area
@@ -106,29 +107,29 @@ export default function Calculator() {
   }, []);
 
   return (
-    <div className="bg-stone-900 rounded-3xl p-6 md:p-10 border border-stone-800 shadow-2xl overflow-hidden relative">
-      <div className="absolute top-0 right-0 w-64 h-64 bg-green-950/20 rounded-full blur-3xl -z-10 opacity-60" />
+    <div className="bg-white rounded-3xl p-6 md:p-10 border border-stone-300 shadow-lg overflow-hidden relative">
+      <div className="absolute top-0 right-0 w-64 h-64 bg-[#059212]/5 rounded-full blur-3xl -z-10 opacity-60" />
 
       {/* Head section */}
-      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-stone-850">
+      <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6 pb-6 border-b border-stone-200">
         <div>
-          <span className="text-xs font-mono text-green-400 font-bold uppercase tracking-wider block mb-1">
+          <span className="text-xs font-mono text-[#059212] font-bold uppercase tracking-wider block mb-1">
             Structural & Eco Audit
           </span>
-          <h3 className="font-display text-2xl md:text-3xl font-extrabold text-white tracking-tight">
+          <h3 className="font-display text-2xl md:text-3xl font-extrabold text-stone-900 tracking-tight">
             Eco-Construction Dynamic Calculator
           </h3>
-          <p className="text-stone-400 text-sm mt-1 max-w-xl">
+          <p className="text-stone-605 text-sm mt-1 max-w-xl">
             Input your wall parameters to instantly calculate materials, soil preservation, steel load savings, and labor timelines.
           </p>
         </div>
 
         {/* Unit Selector */}
-        <div className="flex bg-stone-950 p-1 rounded-xl border border-stone-850 self-start lg:self-center">
+        <div className="flex bg-stone-200/50 p-1 rounded-xl border border-stone-250 self-start lg:self-center">
           <button
             onClick={() => { setUnitType('sqft'); setArea(1000); }}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              unitType === 'sqft' ? 'bg-stone-800 text-white shadow-sm' : 'text-stone-400 hover:text-stone-200'
+              unitType === 'sqft' ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
             SQUARE FEET (SQ FT)
@@ -136,7 +137,7 @@ export default function Calculator() {
           <button
             onClick={() => { setUnitType('sqm'); setArea(100); }}
             className={`px-3.5 py-1.5 text-xs font-semibold rounded-lg transition-all ${
-              unitType === 'sqm' ? 'bg-stone-800 text-white shadow-sm' : 'text-stone-400 hover:text-stone-200'
+              unitType === 'sqm' ? 'bg-white text-stone-900 shadow-xs' : 'text-stone-500 hover:text-stone-800'
             }`}
           >
             SQUARE METERS (SQ M)
@@ -151,19 +152,19 @@ export default function Calculator() {
         <div className="lg:col-span-5 flex flex-col gap-6">
           
           {/* Wall Area Selector Block */}
-          <div className="bg-stone-950 p-6 rounded-2xl border border-stone-850 relative">
+          <div className="bg-white p-6 rounded-2xl border border-stone-300 relative shadow-md">
             <div className="flex items-center justify-between mb-4">
-              <label className="text-sm font-bold text-stone-200">
+              <label className="text-sm font-bold text-stone-700">
                 Total Wall Surface Area
               </label>
-              <div className="bg-stone-800 px-3 py-1 rounded-lg border border-stone-700/60">
+              <div className="bg-stone-100/80 px-3 py-1 rounded-lg border border-stone-300 shadow-xs">
                 <input
                   type="number"
                   value={area}
                   onChange={(e) => setArea(Math.max(1, parseInt(e.target.value) || 0))}
-                  className="w-16 bg-transparent text-right font-display font-bold text-white focus:outline-none focus:ring-0"
+                  className="w-16 bg-transparent text-right font-display font-bold text-stone-900 focus:outline-none focus:ring-0"
                 />
-                <span className="text-xs font-mono font-semibold text-stone-400 ml-1">
+                <span className="text-xs font-mono font-semibold text-stone-500 ml-1">
                   {unitType === 'sqft' ? 'sq ft' : 'm²'}
                 </span>
               </div>
@@ -177,7 +178,7 @@ export default function Calculator() {
               step={unitType === 'sqft' ? 50 : 5}
               value={area}
               onChange={(e) => setArea(parseInt(e.target.value))}
-              className="w-full h-1.5 bg-stone-800 rounded-lg appearance-none cursor-pointer accent-green-600 focus:outline-none"
+              className="w-full h-1.5 bg-stone-150 rounded-lg appearance-none cursor-pointer accent-[#059212] focus:outline-none"
             />
             
             <div className="flex items-center justify-between text-[11px] font-mono text-stone-500 mt-2">
@@ -188,8 +189,8 @@ export default function Calculator() {
 
           {/* Block Thickness Selector */}
           <div>
-            <label className="text-sm font-bold text-stone-200 flex items-center gap-1.5 mb-3">
-              <SlidersHorizontal className="w-4 h-4 text-green-400" />
+            <label className="text-sm font-bold text-stone-700 flex items-center gap-1.5 mb-3">
+              <SlidersHorizontal className="w-4 h-4 text-[#059212]" />
               Proposed Block Thickness (Width)
             </label>
             
@@ -200,8 +201,8 @@ export default function Calculator() {
                   onClick={() => setSelectedThickness(th)}
                   className={`p-2 rounded-xl text-xs font-mono font-bold border transition-all ${
                     selectedThickness === th
-                      ? 'bg-green-600 text-white border-green-500 shadow-md shadow-green-600/10'
-                      : 'bg-stone-850 text-stone-300 border-stone-800 hover:bg-stone-800'
+                      ? 'bg-[#059212] text-white border-green-600 shadow-md'
+                      : 'bg-[#F8F9FA] text-stone-850 border-stone-300 hover:bg-stone-200 hover:border-stone-400 shadow-xs'
                   }`}
                 >
                   {th} mm
@@ -210,8 +211,8 @@ export default function Calculator() {
             </div>
 
             {/* Thickness Helper Guidelines */}
-            <div className="bg-stone-950 border border-stone-800/80 p-4 rounded-xl text-stone-400 text-[11px] leading-relaxed mt-4 flex items-start gap-2">
-              <span className="bg-green-950/80 text-green-400 border border-green-900/40 font-bold px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wide mt-0.5 whitespace-nowrap">
+            <div className="bg-[#F8F9FA] border border-stone-300 p-4 rounded-xl text-stone-605 text-[11px] leading-relaxed mt-4 flex items-start gap-2 shadow-sm">
+              <span className="bg-green-50 text-[#059212] border border-green-200/50 font-bold px-1.5 py-0.5 rounded text-[9px] uppercase tracking-wide mt-0.5 whitespace-nowrap">
                 Usage Tip
               </span>
               <span>
@@ -223,168 +224,454 @@ export default function Calculator() {
           </div>
 
           {/* Structural Certification Panel */}
-          <div className="bg-gradient-to-br from-green-950 to-green-900/90 text-white p-5 rounded-2xl shadow-lg relative overflow-hidden border border-green-900/30">
-            <div className="absolute right-0 bottom-0 top-0 w-24 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-green-500/25 to-transparent blur-xl" />
+          <div className="bg-[#059212] text-white p-5 rounded-2xl shadow-lg relative overflow-hidden border border-green-800">
+            <div className="absolute right-0 bottom-0 top-0 w-24 bg-[radial-gradient(ellipse_at_bottom_right,_var(--tw-gradient-stops))] from-white/15 to-transparent blur-xl" />
             
             <div className="flex items-start gap-3.5 relative z-10">
               <div className="bg-white/10 p-2.5 rounded-xl border border-white/15">
-                <Building className="w-5 h-5 text-green-400" />
+                <Building className="w-5 h-5 text-green-200" />
               </div>
               <div>
-                <span className="text-[10px] uppercase font-semibold text-green-400 tracking-wider">
+                <span className="text-[10px] uppercase font-semibold text-green-100 tracking-wider">
                   Guaranteed Standards Compliance
                 </span>
                 <h4 className="font-display font-semibold text-sm text-white mt-0.5">
                   Bureau of Indian Standards Approved
                 </h4>
-                <p className="text-[11px] text-green-200/80 leading-relaxed mt-1">
+                <p className="text-[11px] text-stone-200/80 leading-relaxed mt-1">
                   Eco Blox elements are manufactured under rigid ISO and BIS guidelines. Certified high-performance compressive strength (4.0-5.0 N/mm²) delivers maximum earthquake protection.
                 </p>
               </div>
             </div>
           </div>
 
+          {/* Elegant 3D rotating desktop architect showcase */}
+          <div className="hidden lg:block">
+            <Building3D />
+          </div>
+
         </div>
 
         {/* Right Column: Dynamic Output Impact Cards */}
         <div className="lg:col-span-7 flex flex-col gap-6">
-          <div className="text-xs font-mono font-bold text-stone-500 flex items-center justify-between border-b border-stone-800 pb-2">
+          <div className="text-xs font-mono font-semibold text-stone-553 flex items-center justify-between border-b border-stone-200 pb-2">
             <span>AUDITED ESTIMATED ADVANTAGES</span>
-            <span className="text-green-400 animate-pulse">Verified by Swift Group</span>
+            <span className="text-[#059212] font-bold">Verified by Swift Group</span>
           </div>
 
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             
-            {/* Cards 1: Blocks Required */}
+            {/* Cards 1: Blocks Required with Red Brick Comparison */}
             <div 
               id="calc-materials-volume-card"
-              className="bg-stone-950 hover:bg-stone-850/80 hover:scale-[1.025] hover:border-green-500/30 hover:shadow-[0_0_20px_rgba(34,197,94,0.08)] p-5 rounded-2xl border border-stone-850/65 transition-all duration-300 flex flex-col"
+              className="bg-[#F8F9FA] hover:bg-white hover:scale-[1.015] hover:border-[#059212] hover:shadow-lg p-5 rounded-2xl border border-stone-300 shadow-sm transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-stone-400">Materials Volume</span>
-                <span className="p-1 px-2.5 bg-green-950/80 text-green-400 border border-green-900/40 font-mono font-bold text-[9px] rounded-full">
-                  1 : 8 substitution
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-stone-600">Materials Comparison</span>
+                  <span className="p-1 px-2.5 bg-green-50 text-[#059212] border border-green-200 font-mono font-bold text-[9px] rounded-full">
+                    1 : 8 Volumetric Ratio
+                  </span>
+                </div>
+
+                {/* Comparative Volume Layout */}
+                <div className="grid grid-cols-2 gap-4 border-b border-stone-200 pb-3 mb-3">
+                  <div>
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟩 ECO BLOX
+                    </div>
+                    <div className="font-display font-extrabold text-stone-900 text-3xl leading-none">
+                      {calculations.blocksCount.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-stone-600 font-bold mt-1">
+                      Lightweight Units
+                    </div>
+                  </div>
+
+                  <div className="border-l border-stone-200 pl-4">
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟥 RED BRICKS
+                    </div>
+                    <div className="font-display font-extrabold text-[#C42D2D] text-3xl leading-none">
+                      {calculations.traditionalBricksCount.toLocaleString()}
+                    </div>
+                    <div className="text-xs text-stone-600 font-bold mt-1">
+                      Traditional Clay
+                    </div>
+                  </div>
+                </div>
+
+                {/* Volumetric ratio visual container */}
+                <div className="bg-stone-100 rounded-xl p-3 border border-stone-250/60 space-y-2 mb-3">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-stone-600">
+                    <span>Laying Footprint Equivalent</span>
+                    <span className="text-[#059212] font-semibold">-87.5% pieces needed</span>
+                  </div>
+
+                  <div className="flex items-center gap-2">
+                    {/* Eco Block Representative Shape */}
+                    <div className="w-[30%] bg-emerald-600 h-7 rounded border border-emerald-700 flex items-center justify-center text-white text-[9px] font-mono font-black" title="1 Swift Eco Blox Unit">
+                      1 BLOCK
+                    </div>
+                    
+                    <span className="text-stone-400 text-xs font-semibold font-mono font-bold">≈</span>
+                    
+                    {/* Clay Brick Grid Equivalent */}
+                    <div className="flex-1 grid grid-cols-4 gap-1 h-7">
+                      {Array.from({ length: 8 }).map((_, idx) => (
+                        <div key={idx} className="bg-red-600/95 rounded-[3px] border border-red-700/80 flex items-center justify-center text-white text-[7px] font-bold font-mono" title={`Clay Brick Unit ${idx + 1}`}>
+                          🧱
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="font-display font-extrabold text-white text-3xl">
-                {calculations.blocksCount.toLocaleString()}
-              </div>
-              <div className="font-display font-bold text-sm text-white mt-1">
-                Eco Blox Required
-              </div>
-              <p className="text-[11px] text-stone-400 leading-snug mt-1 border-t border-stone-851 pt-1.5">
-                Replaces <strong className="text-stone-300 font-semibold">{calculations.traditionalBricksCount.toLocaleString()}</strong> traditional red bricks, reducing concrete block joints significantly.
+
+              <p className="text-[11px] text-stone-605 leading-relaxed pt-1">
+                A single lightweight Eco Blox replaces <strong className="text-stone-850 font-bold">8 traditional red brick blocks</strong>, streamlining construction, reducing handling, and cutting jointing mortar consumption.
               </p>
             </div>
 
             {/* Card 2: Foundation Weight saved */}
             <div 
               id="calc-structural-load-card"
-              className="bg-stone-950 hover:bg-stone-850/80 hover:scale-[1.025] hover:border-orange-500/30 hover:shadow-[0_0_20px_rgba(249,115,22,0.08)] p-5 rounded-2xl border border-stone-850/65 transition-all duration-300 flex flex-col"
+              className="bg-[#F8F9FA] hover:bg-white hover:scale-[1.015] hover:border-[#059212] hover:shadow-lg p-5 rounded-2xl border border-stone-300 shadow-sm transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-stone-400">Dead Load Weight Saved</span>
-                <span className="p-1 px-2 bg-orange-950/80 text-orange-300 border border-orange-900/40 font-mono font-bold text-[9px] rounded-full">
-                  Steel & Foundation
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-stone-600">Structural Load Saved</span>
+                  <span className="p-1 px-2.5 bg-red-50 text-[#C42D2D] border border-red-100 font-mono font-bold text-[9px] rounded-full">
+                    -65% Dead Load
+                  </span>
+                </div>
+
+                {/* Comparative Weight Load Layout */}
+                <div className="grid grid-cols-2 gap-4 border-b border-stone-200 pb-3 mb-3">
+                  <div>
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟩 ECO BLOX WEIGHT
+                    </div>
+                    <div className="font-display font-extrabold text-stone-900 text-2xl leading-none">
+                      {(calculations.totalEcoBloxWeightKg / 1000).toFixed(2)} T
+                    </div>
+                    <div className="text-xs text-stone-605 font-medium mt-1">
+                      ({calculations.totalEcoBloxWeightKg.toLocaleString()} kg)
+                    </div>
+                  </div>
+
+                  <div className="border-l border-stone-200 pl-4">
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟥 RED BRICKS WEIGHT
+                    </div>
+                    <div className="font-display font-extrabold text-[#C42D2D] text-2xl leading-none">
+                      {(calculations.totalBrickWeightKg / 1000).toFixed(2)} T
+                    </div>
+                    <div className="text-xs text-stone-605 font-medium mt-1">
+                      ({calculations.totalBrickWeightKg.toLocaleString()} kg)
+                    </div>
+                  </div>
+                </div>
+
+                {/* Load weight bar dynamic visual */}
+                <div className="bg-stone-100 rounded-xl p-3 border border-stone-250/60 space-y-2 mb-3">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-stone-600">
+                    <span>Dead-Weight Load Comparison</span>
+                    <span className="text-emerald-750 font-black">{calculations.weightSavedTons} Tons lighter</span>
+                  </div>
+
+                  <div className="space-y-1.5 pt-0.5">
+                    {/* Eco Block Bar */}
+                    <div>
+                      <div className="flex justify-between text-[9px] font-mono text-emerald-800 font-bold mb-0.5">
+                        <span>Swift Eco Blox</span>
+                        <span>~30% Weight</span>
+                      </div>
+                      <div className="w-full bg-stone-200 rounded-full h-2 overflow-hidden border border-stone-300">
+                        <div className="bg-emerald-600 h-full rounded-full" style={{ width: '30%' }} />
+                      </div>
+                    </div>
+
+                    {/* Clay Brick Bar */}
+                    <div>
+                      <div className="flex justify-between text-[9px] font-mono text-[#C42D2D] font-bold mb-0.5">
+                        <span>Traditional Red Bricks</span>
+                        <span>100% Weight</span>
+                      </div>
+                      <div className="w-full bg-stone-200 rounded-full h-2 overflow-hidden border border-stone-300">
+                        <div className="bg-red-600 h-full rounded-full" style={{ width: '100%' }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="font-display font-extrabold text-orange-400 text-3xl">
-                {calculations.weightSavedTons} Tons
-              </div>
-              <div className="font-display font-bold text-sm text-white mt-1">
-                Reduction in Structural Load
-              </div>
-              <p className="text-[11px] text-stone-400 leading-snug mt-1 border-t border-stone-851 pt-1.5">
-                Eco Blox wall weight is <strong className="text-stone-300">{calculations.totalEcoBloxWeightKg.toLocaleString()} kg</strong> compared to traditional <strong className="text-stone-300">{calculations.totalBrickWeightKg.toLocaleString()} kg</strong> bricks.
+
+              <p className="text-[11px] text-stone-605 leading-relaxed pt-1">
+                Savings of <strong className="text-stone-850 font-bold">{calculations.weightSavedTons} Tons</strong> in structural load decreases deep foundation costs and steel reinforcement quantities required.
               </p>
             </div>
 
             {/* Card 3: Environmental Index */}
             <div 
               id="calc-carbon-offset-card"
-              className="bg-stone-950 hover:bg-stone-850/80 hover:scale-[1.025] hover:border-green-500/40 hover:shadow-[0_0_20px_rgba(34,197,94,0.08)] p-5 rounded-2xl border border-stone-850/65 transition-all duration-300 flex flex-col relative group"
+              className="bg-[#F8F9FA] hover:bg-white hover:scale-[1.015] hover:border-[#059212] hover:shadow-lg p-5 rounded-2xl border border-stone-300 shadow-sm transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="absolute top-3 right-3 opacity-10 group-hover:opacity-20 transition-opacity">
-                <Leaf className="w-12 h-12 text-green-600" />
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-stone-600">Environmental Impact</span>
+                  <span className="p-1 px-2.5 bg-green-50 text-[#059212] border border-green-100 font-mono font-bold text-[9px] rounded-full">
+                    Eco Protection
+                  </span>
+                </div>
+
+                {/* Comparative Environmental Metrics */}
+                <div className="grid grid-cols-2 gap-4 border-b border-stone-200 pb-3 mb-3">
+                  <div>
+                    <div className="text-[9px] font-mono text-[#059212] font-black uppercase tracking-wider mb-1">
+                      🌿 ECO BLOX SAVINGS
+                    </div>
+                    <div className="font-display font-extrabold text-[#059212] text-2xl leading-none">
+                      {calculations.co2OffsetKg.toLocaleString()} kg
+                    </div>
+                    <div className="text-xs text-stone-605 font-medium mt-1">
+                      Carbon Offset Made
+                    </div>
+                  </div>
+
+                  <div className="border-l border-stone-200 pl-4">
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      ⚠️ CLAY SOIL LOST
+                    </div>
+                    <div className="font-display font-extrabold text-[#C42D2D] text-2xl leading-none">
+                      {calculations.agriculturalSoilSavedTons} T
+                    </div>
+                    <div className="text-xs text-stone-605 font-medium mt-1">
+                      Topsoil Excavated
+                    </div>
+                  </div>
+                </div>
+
+                {/* Topsoil preservation bar visual */}
+                <div className="bg-stone-100 rounded-xl p-3 border border-stone-250/60 space-y-2 mb-3">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-stone-600">
+                    <span>Agricultural Topsoil Status</span>
+                    <span className="text-[#059212] font-bold">100% Soil Protected</span>
+                  </div>
+
+                  <div className="space-y-1.5 pt-0.5">
+                    {/* Eco Blox soil protection status */}
+                    <div>
+                      <div className="flex justify-between text-[9px] font-mono text-emerald-800 font-semibold mb-0.5">
+                        <span>Using Eco Blox (Fly-ash composite)</span>
+                        <span>0% Crop Soil Used</span>
+                      </div>
+                      <div className="w-full bg-emerald-100 rounded-full h-2 overflow-hidden border border-emerald-200">
+                        <div className="bg-emerald-600 h-full rounded-full" style={{ width: '100%' }} />
+                      </div>
+                    </div>
+
+                    {/* Red clay brick strip-mining impact */}
+                    <div>
+                      <div className="flex justify-between text-[9px] font-mono text-red-800 font-semibold mb-0.5">
+                        <span>Red Brick Kilns (Raw Clay soil)</span>
+                        <span>{calculations.agriculturalSoilSavedTons} Tons Soil Burned</span>
+                      </div>
+                      <div className="w-full bg-red-100 rounded-full h-2 overflow-hidden border border-red-200">
+                        <div className="bg-red-500 h-full rounded-full" style={{ width: '35%' }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-stone-400">Eco Conservation</span>
-                <span className="text-green-400 text-xs font-bold flex items-center gap-0.5">
-                  <Leaf className="w-3 h-3" />
-                  Made from Waste
-                </span>
-              </div>
-              <div className="font-display font-extrabold text-green-400 text-3xl">
-                {calculations.co2OffsetKg.toLocaleString()} kg
-              </div>
-              <div className="font-display font-bold text-sm text-white mt-1">
-                Carbon Offset Potential
-              </div>
-              <p className="text-[11px] text-stone-400 leading-snug mt-1 border-t border-stone-851 pt-1.5">
-                Preserves <strong className="text-green-400">{calculations.agriculturalSoilSavedTons} Tons</strong> of organic farming topsoil by replacing standard clay brick kilns entirely.
+
+              <p className="text-[11px] text-stone-605 leading-relaxed pt-1">
+                Replacing clay kiln firings preserves <strong className="text-stone-850 font-bold">{calculations.agriculturalSoilSavedTons} Tons</strong> of fertile organic agricultural topsoil from deep destructive excavation.
               </p>
             </div>
 
             {/* Card 4: Speedy build speed */}
             <div 
               id="calc-timeline-impact-card"
-              className="bg-stone-950 hover:bg-stone-850/80 hover:scale-[1.025] hover:border-blue-500/30 hover:shadow-[0_0_20px_rgba(59,130,246,0.08)] p-5 rounded-2xl border border-stone-850/65 transition-all duration-300 flex flex-col"
+              className="bg-[#F8F9FA] hover:bg-white hover:scale-[1.015] hover:border-[#059212] hover:shadow-lg p-5 rounded-2xl border border-stone-300 shadow-sm transition-all duration-300 flex flex-col justify-between"
             >
-              <div className="flex items-center justify-between mb-3">
-                <span className="text-xs font-bold text-stone-400">Timeline Impact</span>
-                <span className="p-1 px-2.5 bg-blue-950/80 text-blue-300 border border-blue-900/40 font-mono font-bold text-[9px] rounded-full">
-                  Labor Boost 3x
-                </span>
+              <div>
+                <div className="flex items-center justify-between mb-3">
+                  <span className="text-xs font-bold text-stone-600">Timeline Impact</span>
+                  <span className="p-1 px-2.5 bg-green-50 text-[#059212] border border-green-100 font-mono font-bold text-[9px] rounded-full">
+                    3x Faster Laying
+                  </span>
+                </div>
+
+                {/* Comparative Timeline values */}
+                <div className="grid grid-cols-2 gap-4 border-b border-stone-200 pb-3 mb-3">
+                  <div>
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟩 ECO BLOX SPEED
+                    </div>
+                    <div className="font-display font-extrabold text-[#059212] text-2xl leading-none">
+                      {calculations.daysSaved} Days Saved
+                    </div>
+                    <div className="text-xs text-stone-605 font-medium mt-1">
+                      Rapid Handover
+                    </div>
+                  </div>
+
+                  <div className="border-l border-stone-200 pl-4">
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟥 RED BRICKS LAYING
+                    </div>
+                    <div className="font-display font-extrabold text-[#C42D2D] text-2xl leading-none">
+                      3x Time
+                    </div>
+                    <div className="text-xs text-stone-605 font-medium mt-1">
+                      Prolonged Labour
+                    </div>
+                  </div>
+                </div>
+
+                {/* Timeline completion speed race bars */}
+                <div className="bg-stone-100 rounded-xl p-3 border border-stone-250/60 space-y-2 mb-3">
+                  <div className="flex items-center justify-between text-[10px] font-mono font-bold text-stone-600">
+                    <span>Project Speed to Completion</span>
+                    <span className="text-[#059212] font-semibold">Saves ~60% timeline</span>
+                  </div>
+
+                  <div className="space-y-1.5 pt-0.5">
+                    {/* Eco Blox Lane */}
+                    <div>
+                      <div className="flex justify-between text-[9px] font-mono text-emerald-800 font-bold mb-0.5">
+                        <span>Swift Eco Blox timeline</span>
+                        <span>Fast Tracked</span>
+                      </div>
+                      <div className="w-full bg-stone-200 rounded-full h-2 overflow-hidden border border-stone-300">
+                        <div className="bg-[#059212] h-full rounded-full" style={{ width: '35%' }} />
+                      </div>
+                    </div>
+
+                    {/* Traditional Bricks Lane */}
+                    <div>
+                      <div className="flex justify-between text-[9px] font-mono text-red-800 font-bold mb-0.5">
+                        <span>Traditional Red Brick timeline</span>
+                        <span>Standard Project</span>
+                      </div>
+                      <div className="w-full bg-stone-200 rounded-full h-2 overflow-hidden border border-stone-300">
+                        <div className="bg-red-500 h-full rounded-full" style={{ width: '100%' }} />
+                      </div>
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="font-display font-extrabold text-blue-400 text-3xl">
-                {calculations.daysSaved} Days Saved
-              </div>
-              <div className="font-display font-bold text-sm text-white mt-1">
-                Mason Laying Speed
-              </div>
-              <p className="text-[11px] text-stone-400 leading-snug mt-1 border-t border-stone-851 pt-1.5">
-                Reduces total wall construction cycle speed by roughly 60%. Speeds up critical structural handovers on site.
+
+              <p className="text-[11px] text-stone-605 leading-relaxed pt-1">
+                The lightweight and large surface layout profile of Eco Blox enables a mason to construct walls three times faster than laying traditional bricks, shortening structural loops.
               </p>
             </div>
 
             {/* Card 5: Adhesive joint mortar */}
-            <div className="bg-stone-950 p-5 rounded-2xl border border-stone-850/65 transition-all flex flex-col sm:col-span-2">
-              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-3">
-                <span className="text-xs font-bold text-stone-400">Masonry Adhesive Savings</span>
-                <div className="flex items-center gap-1.5 text-xs text-green-400 font-bold bg-green-950/80 border border-green-900/40 p-1 px-2.5 rounded-lg">
-                  <Percent className="w-3.5 h-3.5" />
-                  <span>Saves {calculations.mortarSavingsPercent}% mortar material</span>
-                </div>
-              </div>
-              
-              <div className="grid grid-cols-2 gap-4 pt-1.5">
-                <div>
-                  <span className="text-[10px] uppercase text-stone-500 font-mono">Traditional Bricks</span>
-                  <div className="font-display font-extrabold text-stone-300 text-xl">
-                    {calculations.traditionalMortarBags} Bags
+            <div 
+              id="calc-mortar-savings-card"
+              className="bg-[#F8F9FA] hover:bg-white hover:border-[#059212] hover:shadow-lg p-5 rounded-2xl border border-stone-300 shadow-sm transition-all duration-300 flex flex-col justify-between sm:col-span-2"
+            >
+              <div>
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2 mb-4">
+                  <span className="text-xs font-bold text-stone-600">Masonry Adhesive Savings</span>
+                  <div className="flex items-center gap-1.5 text-xs text-[#059212] font-bold bg-green-50 border border-green-200 p-1 px-2.5 rounded-lg w-fit">
+                    <Percent className="w-3.5 h-3.5 text-[#059212]" />
+                    <span>Saves {calculations.mortarSavingsPercent}% mortar material</span>
                   </div>
-                  <p className="text-[10px] text-stone-400 mt-0.5">Heavy Sand Cement Mix</p>
                 </div>
-                <div className="border-l pl-4 border-stone-800">
-                  <span className="text-[10px] uppercase text-green-400 font-mono font-bold">Swift Eco Blox</span>
-                  <div className="font-display font-extrabold text-green-400 text-xl">
-                    {calculations.aacMortarBags} Bags
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 border-b border-stone-200 pb-4 mb-4">
+                  <div>
+                    <div className="text-[9px] font-mono text-[#059212] font-black uppercase tracking-wider mb-1">
+                      🟩 SWIFT ECO BLOX (THIN-BED COMPOUND)
+                    </div>
+                    <div className="font-display font-extrabold text-[#059212] text-3xl leading-none flex items-baseline gap-1">
+                      {calculations.aacMortarBags} <span className="text-sm text-stone-605 font-bold font-sans">Bags Required</span>
+                    </div>
+                    <p className="text-[10px] text-stone-453 font-mono mt-1">
+                      1-2mm thin-bed joint polymer adhesive
+                    </p>
                   </div>
-                  <p className="text-[10px] text-stone-400 mt-0.5">Thin-Bed Polymer compound</p>
+
+                  <div className="border-t sm:border-t-0 sm:border-l border-stone-200 pt-4 sm:pt-0 sm:pl-6">
+                    <div className="text-[9px] font-mono text-stone-400 font-black uppercase tracking-wider mb-1">
+                      🟥 TRADITIONAL BRICKS (SAND-CEMENT MIX)
+                    </div>
+                    <div className="font-display font-extrabold text-stone-900 text-3xl leading-none flex items-baseline gap-1">
+                      {calculations.traditionalMortarBags} <span className="text-sm text-stone-654 font-bold font-sans">Bags Required</span>
+                    </div>
+                    <p className="text-[10px] text-stone-453 font-mono mt-1">
+                      10-12mm thick coarse cement sand mortar mix
+                    </p>
+                  </div>
                 </div>
+
+                {/* Visual Grid comparison of bags */}
+                <div className="bg-stone-100 rounded-xl p-4 border border-stone-250/60 pb-5">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    
+                    <div className="flex-1 space-y-1">
+                      <div className="text-[10px] font-mono font-bold text-stone-605">
+                        Mortar bags consumption ratio
+                      </div>
+                      <div className="text-[11px] text-stone-654 leading-normal font-medium">
+                        Adhesive-based jointing cuts weight and raw material haulage on your site by up to <strong>-75%</strong>.
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-4 border-t md:border-t-0 pt-3 md:pt-0 border-stone-200">
+                      
+                      {/* Compact adhesive representation */}
+                      <div className="flex flex-col items-center">
+                        <div className="w-12 h-14 bg-[#059212] rounded-lg border border-emerald-700 shadow-sm flex flex-col items-center justify-center text-white relative">
+                          <span className="text-[14px] font-black leading-none">🧳</span>
+                          <span className="text-[8px] font-mono font-black uppercase mt-1">ECO</span>
+                        </div>
+                        <span className="text-[9px] font-mono font-bold text-stone-600 mt-1">
+                          {calculations.aacMortarBags} Thin-bed Bags
+                        </span>
+                      </div>
+
+                      <span className="text-stone-453 font-display font-black text-xl">vs</span>
+
+                      {/* Heavy sand stack representation */}
+                      <div className="flex flex-col items-center">
+                        <div className="flex -space-x-2">
+                          <div className="w-10 h-10 bg-stone-500 rounded-lg border border-stone-605 shadow-sm flex flex-col items-center justify-center text-white relative transform translate-y-1">
+                            <span className="text-[10px]">🧳</span>
+                          </div>
+                          <div className="w-10 h-11 bg-stone-600 rounded-lg border border-stone-701 shadow-md flex flex-col items-center justify-center text-white relative z-10 transform -translate-y-1">
+                            <span className="text-[11px] font-black">🧳</span>
+                            <span className="text-[6px] font-mono font-black uppercase">HEAVY</span>
+                          </div>
+                          <div className="w-10 h-10 bg-stone-553 rounded-lg border border-stone-605 shadow-sm flex flex-col items-center justify-center text-white relative transform translate-y-1">
+                            <span className="text-[10px]">🧳</span>
+                          </div>
+                        </div>
+                        <span className="text-[9px] font-mono font-bold text-stone-600 mt-1">
+                          {calculations.traditionalMortarBags} Coarse Bags
+                        </span>
+                      </div>
+
+                    </div>
+
+                  </div>
+                </div>
+
               </div>
             </div>
 
           </div>
 
           {/* Calculated Direct Cost Benefit projection */}
-          <div className="bg-green-950/30 p-5 rounded-2xl border border-green-900/40 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-1">
+          <div className="bg-[#FFF5F5] p-5 rounded-2xl border border-red-200 flex flex-col sm:flex-row sm:items-center justify-between gap-4 mt-1 shadow-xs">
             <div>
-              <h5 className="font-display font-bold text-white text-sm flex items-center gap-1.5">
-                <Coins className="text-green-455 w-4.5 h-4.5" />
+              <h5 className="font-display font-bold text-stone-900 text-sm flex items-center gap-1.5">
+                <Coins className="text-[#C42D2D] w-4.5 h-4.5" />
                 Aggregated Cost Advantages
               </h5>
-              <p className="text-[11px] text-stone-400 leading-relaxed mt-1 max-w-md">
+              <p className="text-[11px] text-stone-605 leading-relaxed mt-1 max-w-md">
                 Refining overall construction with Swift Eco Blox saves on foundation concrete thickness, jointing chemicals, rebar weights, and masonry daily wages.
               </p>
             </div>
@@ -393,10 +680,10 @@ export default function Calculator() {
               <span className="text-[10px] font-mono text-stone-500 font-bold block uppercase">
                 Estimated Project Saving
               </span>
-              <span className="font-display font-black text-green-400 text-2xl">
+              <span className="font-display font-black text-[#C42D2D] text-2xl">
                 ₹ {calculations.currencySaving.toLocaleString()}*
               </span>
-              <span className="text-[9px] text-stone-500 block italic mt-0.5">
+              <span className="text-[9px] text-stone-453 block italic mt-0.5">
                 *Local site values may vary
               </span>
             </div>

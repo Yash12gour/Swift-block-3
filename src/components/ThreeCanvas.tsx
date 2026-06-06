@@ -24,6 +24,7 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const mountRef = useRef<HTMLDivElement>(null);
   const [activeTab, setActiveTab] = useState<'showroom' | 'builder' | 'physics'>('showroom');
+  const [isVisible, setIsVisible] = useState<boolean>(true);
   
   // Tab states
   // Builder tab
@@ -39,6 +40,7 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
   const isTestRunningRef = useRef(isTestRunning);
   const activeSizeRef = useRef(activeSize);
   const blocksInWallRef = useRef(blocksInWall);
+  const isVisibleRef = useRef(isVisible);
 
   const updateWallBuilderMeshesRef = useRef<() => void>();
 
@@ -47,6 +49,7 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
   useEffect(() => { isTestRunningRef.current = isTestRunning; }, [isTestRunning]);
   useEffect(() => { activeSizeRef.current = activeSize; }, [activeSize]);
   useEffect(() => { blocksInWallRef.current = blocksInWall; }, [blocksInWall]);
+  useEffect(() => { isVisibleRef.current = isVisible; }, [isVisible]);
 
   // Three.js References
   const rendererRef = useRef<THREE.WebGLRenderer | null>(null);
@@ -55,10 +58,10 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
   const requestRef = useRef<number | null>(null);
 
   // Mesh References
-  const showroomMeshRef = useRef<THREE.Mesh | null>(null);
+  const showroomMeshRef = useRef<THREE.Group | THREE.Mesh | null>(null);
   const builderGroupRef = useRef<THREE.Group | null>(null);
-  const physicsLeftMeshRef = useRef<THREE.Mesh | null>(null); // Brick
-  const physicsRightMeshRef = useRef<THREE.Mesh | null>(null); // Eco Blox
+  const physicsLeftMeshRef = useRef<THREE.Group | THREE.Mesh | null>(null); // Brick
+  const physicsRightMeshRef = useRef<THREE.Group | THREE.Mesh | null>(null); // Eco Blox
   const waterMeshRef = useRef<THREE.Mesh | null>(null);
   const fireParticlesRef = useRef<THREE.Points | null>(null);
 
@@ -77,31 +80,84 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
     canvas.height = 512;
     const ctx = canvas.getContext('2d')!;
     
-    // Cement base colors
-    ctx.fillStyle = '#b0b5b3';
+    // Cement textured base colors
+    ctx.fillStyle = '#c5c8c6';
     ctx.fillRect(0, 0, 512, 512);
 
-    // Apply granular concrete pores
-    for (let i = 0; i < 40000; i++) {
+    // Dry cement color variation patches
+    for (let p = 0; p < 15; p++) {
+      const px = Math.random() * 512;
+      const py = Math.random() * 512;
+      const size = 75 + Math.random() * 125;
+      const grad = ctx.createRadialGradient(px, py, 0, px, py, size);
+      const isDark = Math.random() > 0.5;
+      grad.addColorStop(0, isDark ? 'rgba(140, 145, 143, 0.45)' : 'rgba(235, 238, 236, 0.35)');
+      grad.addColorStop(1, 'rgba(0, 0, 0, 0)');
+      ctx.fillStyle = grad;
+      ctx.fillRect(px - size, py - size, size * 2, size * 2);
+    }
+
+    // Apply granular concrete pores (Highly optimized iteration limit)
+    for (let i = 0; i < 15000; i++) {
       const x = Math.random() * 512;
       const y = Math.random() * 512;
-      const radius = Math.random() * 1.5;
-      const opacity = Math.random() * 0.25;
+      const radius = 0.5 + Math.random() * 1.0;
+      const opacity = Math.random() * 0.20;
       
-      // Grey air-bubbles
-      ctx.fillStyle = `rgba(60, 60, 60, ${opacity})`;
+      ctx.fillStyle = `rgba(50, 52, 51, ${opacity})`;
       ctx.beginPath();
       ctx.arc(x, y, radius, 0, Math.PI * 2);
       ctx.fill();
 
-      // Light grains
-      if (Math.random() > 0.6) {
-        ctx.fillStyle = `rgba(240, 240, 240, ${opacity * 0.5})`;
+      if (Math.random() > 0.75) {
+        ctx.fillStyle = `rgba(255, 255, 255, ${opacity * 0.5})`;
         ctx.beginPath();
-        ctx.arc(x + Math.random(), y + Math.random(), radius * 0.8, 0, Math.PI * 2);
+        ctx.arc(x + 0.5, y + 0.5, radius * 0.6, 0, Math.PI * 2);
         ctx.fill();
       }
     }
+
+    // Add distinct AAC Aeration bubble circular macro-cavities (highly optimized count)
+    for (let j = 0; j < 120; j++) {
+      const cx = Math.random() * 512;
+      const cy = Math.random() * 512;
+      const radius = 1 + Math.random() * 3.5;
+      
+      // Draw bubble shadow (darker background)
+      ctx.fillStyle = 'rgba(70, 72, 71, 0.7)';
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+      ctx.fill();
+
+      // Lower white bevel light reflection curve
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.55)';
+      ctx.lineWidth = 0.5;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, 0, Math.PI);
+      ctx.stroke();
+
+      // Upper dark shadow arc
+      ctx.strokeStyle = 'rgba(25, 26, 25, 0.75)';
+      ctx.lineWidth = 0.4;
+      ctx.beginPath();
+      ctx.arc(cx, cy, radius, Math.PI, Math.PI * 2);
+      ctx.stroke();
+    }
+
+    // Stenciled branding printed on the side of the block (Scaled to 512 width)
+    ctx.save();
+    ctx.translate(256, 256);
+    ctx.rotate(-0.015); // slight angled stamp
+    ctx.fillStyle = 'rgba(10, 85, 25, 0.58)'; // Faded Green Stamp
+    ctx.font = '900 18px monospace';
+    ctx.textAlign = 'center';
+    ctx.fillText('SWIFT INDUSTRIES • ECO BLOX', 0, -20);
+    ctx.font = 'bold 12px monospace';
+    ctx.fillText('AAC GRADE-I / EN-2200 / EXP-D650', 0, 3);
+    ctx.strokeStyle = 'rgba(10, 85, 25, 0.38)';
+    ctx.lineWidth = 2;
+    ctx.strokeRect(-160, -42, 320, 58);
+    ctx.restore();
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
@@ -120,8 +176,8 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
     ctx.fillStyle = '#b24c30';
     ctx.fillRect(0, 0, 256, 256);
 
-    // Clay rough sand grits
-    for (let i = 0; i < 20000; i++) {
+    // Clay rough sand grits (highly optimized)
+    for (let i = 0; i < 4000; i++) {
       const x = Math.random() * 256;
       const y = Math.random() * 256;
       const radius = Math.random() * 1;
@@ -208,20 +264,153 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
     const blockScaleH = (activeSizeRef.current.h / 200) * 0.72;
     const blockScaleW = (activeSizeRef.current.w / 150) * 0.54;
 
-    const showroomGeo = new THREE.BoxGeometry(1, 1, 1);
-    // Chamfer-like bevel simulation using a custom material profile or nice edges
+    // Helper to create a beautifully bevelled box using ExtrudeGeometry
+    const createBevelledBoxGeo = (w: number, h: number, d: number, bevel: number) => {
+      const shape = new THREE.Shape();
+      const sw = w - 2 * bevel;
+      const sh = h - 2 * bevel;
+      shape.moveTo(-sw / 2, -sh / 2);
+      shape.lineTo(sw / 2, -sh / 2);
+      shape.lineTo(sw / 2, sh / 2);
+      shape.lineTo(-sw / 2, sh / 2);
+      shape.lineTo(-sw / 2, -sh / 2);
+
+      const settings = {
+        steps: 1,
+        depth: d - 2 * bevel,
+        bevelEnabled: true,
+        bevelThickness: bevel,
+        bevelSize: bevel,
+        bevelOffset: 0,
+        bevelSegments: 4
+      };
+
+      const geo = new THREE.ExtrudeGeometry(shape, settings);
+      geo.center();
+      return geo;
+    };
+
+    // Helper to create a parametric high-fidelity interlocking AAC block with side holding pockets
+    const create3DAACBlockModel = (w: number, h: number, d: number, bevel: number, material: THREE.Material) => {
+      const parentGroup = new THREE.Group();
+
+      // Body box
+      const bodyGeo = createBevelledBoxGeo(w, h, d, bevel);
+      const bodyMesh = new THREE.Mesh(bodyGeo, material);
+      bodyMesh.castShadow = true;
+      bodyMesh.receiveShadow = true;
+      parentGroup.add(bodyMesh);
+
+      // Left face tongue protrusion
+      const tongueW = w * 0.055;
+      const tongueH = h * 0.82;
+      const tongueD = d * 0.42;
+      const tongueGeo = createBevelledBoxGeo(tongueW, tongueH, tongueD, bevel * 0.3);
+      const tongueMesh = new THREE.Mesh(tongueGeo, material);
+      tongueMesh.position.set(-w / 2 - tongueW / 2 + 0.005, 0, 0);
+      tongueMesh.castShadow = true;
+      tongueMesh.receiveShadow = true;
+      parentGroup.add(tongueMesh);
+
+      // Right grooves (represented via back and front interlocking ribs)
+      const ribW = w * 0.038;
+      const ribH = h * 0.82;
+      const ribD = d * 0.28;
+      const ribGeo = createBevelledBoxGeo(ribW, ribH, ribD, bevel * 0.3);
+
+      const ribBackYPos = d * 0.44;
+      const ribBack = new THREE.Mesh(ribGeo, material);
+      ribBack.position.set(w / 2 + ribW / 2 - 0.005, 0, ribBackYPos - ribD / 2);
+      ribBack.castShadow = true;
+      ribBack.receiveShadow = true;
+      parentGroup.add(ribBack);
+
+      const ribFront = new THREE.Mesh(ribGeo, material);
+      ribFront.position.set(w / 2 + ribW / 2 - 0.005, 0, -ribBackYPos + ribD / 2);
+      ribFront.castShadow = true;
+      ribFront.receiveShadow = true;
+      parentGroup.add(ribFront);
+
+      // Deep dark carry pocket grips
+      const gripMat = new THREE.MeshStandardMaterial({
+        color: 0x181a18,
+        roughness: 0.95,
+        metalness: 0.01
+      });
+
+      // Recessed grip dimensions
+      const gripW = w * 0.01;
+      const gripH = h * 0.18;
+      const gripD = d * 0.26;
+      const gripGeo = createBevelledBoxGeo(gripW, gripH, gripD, bevel * 0.1);
+
+      const leftGrip = new THREE.Mesh(gripGeo, gripMat);
+      leftGrip.position.set(-w / 2 - 0.002, 0, 0);
+      parentGroup.add(leftGrip);
+
+      const rightGrip = new THREE.Mesh(gripGeo, gripMat);
+      rightGrip.position.set(w / 2 + 0.002, 0, 0);
+      parentGroup.add(rightGrip);
+
+      return parentGroup;
+    };
+
+    // Helper to create a classic hollow wire-cut 3D solid brick with cylindrical vertical core-holes
+    const create3DClayBrickModel = (w: number, h: number, d: number, bevel: number, material: THREE.Material) => {
+      const parentGroup = new THREE.Group();
+
+      const shape = new THREE.Shape();
+      const sw = w - 2 * bevel;
+      const sd = d - 2 * bevel;
+      
+      shape.moveTo(-sw / 2, -sd / 2);
+      shape.lineTo(sw / 2, -sd / 2);
+      shape.lineTo(sw / 2, sd / 2);
+      shape.lineTo(-sw / 2, sd / 2);
+      shape.lineTo(-sw / 2, -sd / 2);
+
+      // Add 3 circular holes
+      const holeRadius = d * 0.15;
+      const spanRange = sw * 0.28;
+      for (const offset of [-spanRange, 0, spanRange]) {
+        const holePath = new THREE.Path();
+        holePath.absarc(offset, 0, holeRadius, 0, Math.PI * 2, true);
+        shape.holes.push(holePath);
+      }
+
+      // Extrude vertically through height H
+      const settings = {
+        steps: 1,
+        depth: h - 2 * bevel,
+        bevelEnabled: true,
+        bevelThickness: bevel,
+        bevelSize: bevel,
+        bevelOffset: 0,
+        bevelSegments: 4
+      };
+
+      const geo = new THREE.ExtrudeGeometry(shape, settings);
+      geo.center();
+
+      const body = new THREE.Mesh(geo, material);
+      body.rotation.x = -Math.PI / 2; // Orient upright so holes run vertically along Y axis
+      body.castShadow = true;
+      body.receiveShadow = true;
+      parentGroup.add(body);
+
+      return parentGroup;
+    };
+
     const showroomMat = new THREE.MeshStandardMaterial({
       color: 0xcccccc,
       map: concreteText,
       bumpMap: concreteText,
-      bumpScale: 0.02,
-      roughness: 0.8,
+      bumpScale: 0.08, // Enhanced tactile physical depth of the pores
+      roughness: 0.95, // Fully matte like autoclaved cement block
       metalness: 0.05
     });
-    
-    const showroomMesh = new THREE.Mesh(showroomGeo, showroomMat);
-    showroomMesh.castShadow = true;
-    showroomMesh.receiveShadow = true;
+
+    const showroomMesh = create3DAACBlockModel(1, 1, 1, 0.04, showroomMat);
     showroomMesh.position.set(0, 0.1, 0);
     showroomMesh.scale.set(blockScaleL, blockScaleH, blockScaleW);
     scene.add(showroomMesh);
@@ -242,26 +431,23 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
     builderGroupRef.current = builderGroup;
 
     // --- PHYSICS LAB MESHES ---
-    // Left: Traditional Red Clay Brick (L=1.0, H=0.5, W=0.5)
-    const clayBrickGeo = new THREE.BoxGeometry(1.0, 0.5, 0.5);
+    // Left: Traditional Red Clay Brick (with 3 hollow core tunnels)
     const clayBrickMat = new THREE.MeshStandardMaterial({
       color: 0xa84122,
       map: clayText,
       bumpMap: clayText,
-      bumpScale: 0.025,
-      roughness: 0.9,
-      metalness: 0.0
+      bumpScale: 0.035, // Rugged sandstone clay finish
+      roughness: 0.95,
+      metalness: 0.02
     });
-    const clayBrickMesh = new THREE.Mesh(clayBrickGeo, clayBrickMat);
-    clayBrickMesh.castShadow = true;
+    
+    const clayBrickMesh = create3DClayBrickModel(1.0, 0.5, 0.5, 0.015, clayBrickMat);
     clayBrickMesh.position.set(-1.4, 0, 0);
     scene.add(clayBrickMesh);
     physicsLeftMeshRef.current = clayBrickMesh;
 
-    // Right: Swift Eco Blox
-    const rightEcoGeo = new THREE.BoxGeometry(1.5, 0.5, 0.5);
-    const rightEcoMesh = new THREE.Mesh(rightEcoGeo, showroomMat);
-    rightEcoMesh.castShadow = true;
+    // Right: Swift Eco Blox (high-fidelity model)
+    const rightEcoMesh = create3DAACBlockModel(1.5, 0.5, 0.5, 0.015, showroomMat);
     rightEcoMesh.position.set(1.4, 0, 0);
     scene.add(rightEcoMesh);
     physicsRightMeshRef.current = rightEcoMesh;
@@ -337,30 +523,30 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
         for (let col = 0; col < blocksInRow; col++) {
           if (blockIndex >= blocksCount) break;
 
-          let meshGeo = new THREE.BoxGeometry(bW, bH, bD);
           let meshX = 0;
+          let blockWidth = bW;
 
           // Align centered with overlap offset
           if (isOffset) {
             // center gap-stagger layout
             // Blocks: 1 half block, 1 full block, 1 half block
             if (col === 0) {
-              meshGeo = new THREE.BoxGeometry(0.69, bH, bD);
+              blockWidth = 0.69;
               meshX = -1.1;
             } else if (col === 1) {
+              blockWidth = bW;
               meshX = 0;
             } else {
-              meshGeo = new THREE.BoxGeometry(0.69, bH, bD);
+              blockWidth = 0.69;
               meshX = 1.1;
             }
           } else {
             // Two full blocks
+            blockWidth = bW;
             meshX = col === 0 ? -0.735 : 0.735;
           }
 
-          const singleBlockMesh = new THREE.Mesh(meshGeo, showroomMat);
-          singleBlockMesh.castShadow = true;
-          singleBlockMesh.receiveShadow = true;
+          const singleBlockMesh = create3DAACBlockModel(blockWidth, bH, bD, 0.012, showroomMat);
           singleBlockMesh.position.set(meshX, row * (bH + 0.015) - 0.75, 0);
           builderGroup.add(singleBlockMesh);
 
@@ -409,11 +595,22 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
     canvasEl.addEventListener('mousemove', handleMouseMove);
     containerRef.current?.addEventListener('wheel', handleScrollPrevent, { passive: false });
 
-    // 8. Uniform Performance Rendering Loops
+    // 8. Uniform Performance Rendering Loops with 30fps Throttle & Viewport Visibility Checks
     const clock = new THREE.Clock();
+    let frameDelta = 0;
+    const fpsLimit = 1 / 30; // rigid 30 FPS cap
 
     const animate = () => {
+      requestRef.current = requestAnimationFrame(animate);
+
+      // Skip render calculations entirely if the canvas is out of viewport!
+      if (!isVisibleRef.current) return;
+
       const delta = clock.getDelta();
+      frameDelta += delta;
+      if (frameDelta < fpsLimit) return;
+      frameDelta = frameDelta % fpsLimit;
+
       const elapsedTime = clock.getElapsedTime();
 
       // Smooth zoom damping
@@ -567,7 +764,6 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
       }
 
       renderer.render(scene, camera);
-      requestRef.current = requestAnimationFrame(animate);
     };
 
     // Start rendering frame
@@ -589,9 +785,21 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
       resizeObserver.observe(mountRef.current);
     }
 
+    // Viewport Intersection Observer to pause rendering when component is scrolled out of viewport
+    const viewportObserver = new IntersectionObserver(
+      ([entry]) => {
+        setIsVisible(entry.isIntersecting);
+      },
+      { threshold: 0.02 }
+    );
+    if (containerRef.current) {
+      viewportObserver.observe(containerRef.current);
+    }
+
     // Clean up
     return () => {
       resizeObserver.disconnect();
+      viewportObserver.disconnect();
       if (requestRef.current) cancelAnimationFrame(requestRef.current);
       if (canvasEl) canvasEl.removeEventListener('mousemove', handleMouseMove);
       containerRef.current?.removeEventListener('wheel', handleScrollPrevent);
@@ -648,72 +856,71 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
   };
 
   return (
-    <div ref={containerRef} className="bg-stone-900 rounded-3xl p-5 md:p-6 border border-stone-800 shadow-xl overflow-hidden flex flex-col h-full relative">
+    <div ref={containerRef} className="bg-stone-50 rounded-3xl p-5 md:p-6 border border-stone-200 shadow-lg overflow-hidden flex flex-col h-full relative">
       
       {/* Dynamic Tab Navigation Headers */}
-      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-800 pb-3 z-10 relative">
+      <div className="flex flex-wrap items-center justify-between gap-4 border-b border-stone-250 pb-3 z-10 relative">
         <div>
-          <span className="text-xs font-mono text-green-400 font-semibold tracking-wider uppercase block mb-0.5">
+          <span className="text-xs font-mono text-[#059212] font-bold tracking-wider uppercase block mb-0.5">
             Studio Experience
           </span>
-          <h3 className="font-display text-xl md:text-2xl font-bold text-white">
+          <h3 className="font-display text-xl md:text-2xl font-bold text-stone-950">
             Interactive 3D Engine
           </h3>
         </div>
-
-        <div className="flex bg-stone-950 p-1 rounded-xl border border-stone-850">
+ 
+        <div className="flex bg-stone-200/50 p-1 rounded-xl border border-stone-250">
           <button
             onClick={() => { setActiveTab('showroom'); setIsTestRunning(false); setTestResult(''); }}
-            className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold rounded-lg transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'showroom'
-                ? 'bg-stone-800 text-white shadow-sm'
-                : 'text-stone-400 hover:text-stone-200'
+                ? 'bg-white text-stone-900 shadow-xs border border-stone-200/50'
+                : 'text-stone-553 hover:text-stone-900'
             }`}
           >
-            <Sparkles className="w-4 h-4 text-green-400" />
+            <Sparkles className="w-4 h-4 text-green-600" />
             Showroom
           </button>
           <button
             onClick={() => { setActiveTab('builder'); setIsTestRunning(false); setTestResult(''); }}
-            className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold rounded-lg transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'builder'
-                ? 'bg-stone-800 text-white shadow-sm'
-                : 'text-stone-400 hover:text-stone-200'
+                ? 'bg-white text-stone-900 shadow-xs border border-stone-200/50'
+                : 'text-stone-553 hover:text-stone-900'
             }`}
           >
-            <Layers className="w-4 h-4 text-green-400" />
+            <Layers className="w-4 h-4 text-green-600" />
             Build Wall
           </button>
           <button
             onClick={() => { setActiveTab('physics'); setIsTestRunning(false); setTestResult(''); }}
-            className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-medium rounded-lg transition-all duration-300 flex items-center gap-1.5 cursor-pointer ${
+            className={`px-3 md:px-4 py-1.5 md:py-2 text-xs md:text-sm font-semibold rounded-lg transition-all duration-305 flex items-center gap-1.5 cursor-pointer ${
               activeTab === 'physics'
-                ? 'bg-stone-800 text-white shadow-sm'
-                : 'text-stone-400 hover:text-stone-200'
+                ? 'bg-white text-stone-900 shadow-xs border border-stone-200/50'
+                : 'text-stone-553 hover:text-stone-900'
             }`}
           >
-            <Zap className="w-4 h-4 text-green-400" />
+            <Zap className="w-4 h-4 text-green-600" />
             Physics Lab
           </button>
         </div>
       </div>
-
       {/* Main 3D Canvas Container */}
-      <div className="flex-1 min-h-[160px] md:min-h-[220px] lg:min-h-[260px] relative mt-2 flex items-center justify-center">
+      <div className="flex-1 min-h-[120px] md:min-h-[190px] lg:min-h-[240px] relative mt-1.5 flex items-center justify-center">
         
         {/* Mount point for Three.js */}
         <div ref={mountRef} className="absolute inset-0 w-full h-full cursor-grab active:cursor-grabbing z-0" />
         
         {/* Ambient Canvas Labels */}
-        <div className="absolute top-2 left-2 px-2.5 py-0.5 bg-stone-950/80 backdrop-blur-md border border-stone-800/80 rounded text-[9px] font-mono text-stone-400 flex items-center gap-1.5 pointer-events-none select-none">
+        <div className="absolute top-2 left-2 px-2 py-0.5 bg-white/80 backdrop-blur-md border border-stone-200/80 rounded text-[9px] font-mono text-stone-600 flex items-center gap-1 pointer-events-none select-none">
           <span className="w-1 h-1 rounded-full bg-green-500 animate-pulse" />
           WebGL Active • Drag to Spin • Scroll to Zoom
         </div>
-
+ 
       </div>
-
+ 
       {/* Dynamic Context Overlays (Positioned beneath the canvas to keep 3D asset 100% visible) */}
-      <div className="w-full mt-2 pointer-events-auto z-10 flex flex-col gap-1.5">
+      <div className="w-full mt-1.5 pointer-events-auto z-10 flex flex-col gap-1 p-0.5">
         
         <AnimatePresence mode="wait">
           
@@ -724,24 +931,24 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="bg-stone-950/90 backdrop-blur-md p-3.5 rounded-xl border border-stone-800/80 shadow-lg"
+              className="bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-lg border border-stone-200/80 shadow-md animate-fade-in"
             >
               <div className="flex items-start justify-between gap-4">
                 <div>
-                  <h4 className="font-display font-bold text-white text-sm">
+                  <h4 className="font-display font-bold text-stone-900 text-xs sm:text-sm">
                     Eco Blox Model ({activeSize.l}x{activeSize.h}x{activeSize.w} mm)
                   </h4>
-                  <p className="text-xs text-white mt-0.5 leading-relaxed">
+                  <p className="text-[10px] sm:text-xs text-stone-600 mt-0.5 leading-relaxed font-medium">
                     Custom structural block textured with high-density procedural micro air pores. Aeration ratio exceeds 70%.
                   </p>
                 </div>
-                <div className="bg-green-950/80 px-2 py-0.5 rounded text-[9px] font-mono text-green-400 border border-green-800/40 font-bold whitespace-nowrap">
+                <div className="bg-green-100 px-2 py-0.5 rounded text-[8px] sm:text-[9px] font-mono text-green-755 border border-green-220 font-bold whitespace-nowrap">
                   ISI Brand Standard
                 </div>
               </div>
             </motion.div>
           )}
-
+  
           {/* Builder Overlay */}
           {activeTab === 'builder' && (
             <motion.div
@@ -749,44 +956,44 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="bg-stone-950/90 backdrop-blur-md p-3.5 rounded-xl border border-stone-800/80 shadow-lg flex flex-col md:flex-row items-center gap-4 justify-between"
+              className="bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-lg border border-stone-200/80 shadow-md flex flex-col md:flex-row items-center gap-3 sm:gap-4 justify-between"
             >
-              <div>
-                <h4 className="font-display font-mono text-xs font-semibold text-green-400 uppercase tracking-wide">
+              <div className="w-full">
+                <h4 className="font-display font-mono text-[10px] sm:text-xs font-semibold text-green-650 uppercase tracking-wide">
                   Modular Interlock Assembly
                 </h4>
-                <div className="text-xs font-bold text-stone-100 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
+                <div className="text-[10px] sm:text-xs font-bold text-stone-800 mt-0.5 flex flex-wrap items-center gap-x-2 gap-y-0.5">
                   <span>Blocks Stacked: {blocksInWall} / 9</span>
-                  <span className="text-stone-750">|</span>
-                  <span className="text-orange-400 font-medium">Estimated wall weight: {blocksInWall * 11} kg</span>
-                  <span className="text-stone-750 text-xs">vs</span>
-                  <span className="text-red-450 line-through font-normal">{blocksInWall * 36} kg (Red Brick)</span>
+                  <span className="text-stone-300">|</span>
+                  <span className="text-orange-650 font-bold">Wall weight: {blocksInWall * 11} kg</span>
+                  <span className="text-stone-300 text-[10px]">vs</span>
+                  <span className="text-red-600 line-through font-normal">{blocksInWall * 36} kg (Red Brick)</span>
                 </div>
-                <p className="text-[10px] text-stone-400 leading-normal mt-0.5">
-                  AAC blocks interlock perfectly in staggered rows with just 2-3mm PMC binding mortar. Faster assembly, 68% brick dead-load saved!
+                <p className="text-[9px] sm:text-[10px] text-stone-500 leading-normal mt-0.5">
+                  AAC blocks interlock perfectly in staggered rows with just 2-3mm PMC binding mortar. 68% brick dead-load saved!
                 </p>
               </div>
-
-              <div className="flex items-center gap-2 w-full md:w-auto shrink-0">
+ 
+              <div className="flex items-center gap-2 w-full md:w-auto shrink-0 mt-1 sm:mt-0">
                 <button
                   onClick={handleAddBlock}
                   disabled={blocksInWall >= 9}
-                  className="flex-1 md:flex-none justify-center px-3 py-1.5 bg-green-600 hover:bg-green-500 active:scale-95 disabled:opacity-40 disabled:scale-100 text-white font-medium text-xs rounded-lg flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
+                  className="flex-1 md:flex-none justify-center px-3 py-1.5 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-500 active:scale-95 disabled:opacity-40 disabled:scale-100 text-white font-semibold text-[10px] sm:text-xs rounded-lg sm:rounded-xl flex items-center gap-1.5 transition-all shadow-md cursor-pointer"
                 >
-                  <Plus className="w-3.5 h-3.5" />
+                  <Plus className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                   Lay Block
                 </button>
                 <button
                   onClick={handleResetWall}
-                  className="p-1.5 bg-stone-800 hover:bg-stone-700 active:scale-95 rounded-lg transition-all cursor-pointer"
+                  className="p-1.5 sm:p-2 bg-stone-150 hover:bg-stone-200 active:scale-95 rounded-lg sm:rounded-xl transition-all border border-stone-200 cursor-pointer text-stone-705"
                   title="Reset builder"
                 >
-                  <RotateCcw className="w-4 h-4 text-stone-350" />
+                  <RotateCcw className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
                 </button>
               </div>
             </motion.div>
           )}
-
+  
           {/* Physics Lab Overlay */}
           {activeTab === 'physics' && (
             <motion.div
@@ -794,100 +1001,100 @@ export default function ThreeCanvas({ activeSize }: ThreeCanvasProps) {
               initial={{ opacity: 0, y: 15 }}
               animate={{ opacity: 1, y: 0 }}
               exit={{ opacity: 0, y: -15 }}
-              className="bg-stone-950/90 backdrop-blur-md p-3.5 rounded-xl border border-stone-800/80 shadow-lg flex flex-col gap-2.5"
+              className="bg-white/95 backdrop-blur-md p-2.5 sm:p-3 rounded-lg border border-stone-200/80 shadow-md flex flex-col gap-2"
             >
               {/* Lab parameters */}
-              <div className="flex flex-wrap items-center justify-between gap-1.5 bg-stone-900/60 p-1 rounded-xl border border-stone-800/50">
+              <div className="grid grid-cols-3 gap-1 bg-stone-100 p-0.5 sm:p-1 rounded-xl border border-stone-200 w-full">
                 <button
                   onClick={() => { setTestMode('thermal'); setIsTestRunning(false); setTestResult(''); }}
-                  className={`flex-1 px-2.5 py-1 rounded-lg font-medium text-[10px] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  className={`px-1.5 py-1.5 rounded-lg font-bold text-[9px] sm:text-[10px] flex items-center justify-center gap-1 transition-all cursor-pointer ${
                     testMode === 'thermal'
-                      ? 'bg-orange-950/60 text-orange-200 border border-orange-850'
-                      : 'text-stone-400 hover:text-stone-200 border border-transparent'
+                      ? 'bg-orange-100 text-orange-850 border border-orange-200'
+                      : 'text-stone-553 hover:text-stone-800 border border-transparent'
                   }`}
                 >
-                  <Flame className="w-3.5 h-3.5 text-orange-550" />
+                  <Flame className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-orange-600" />
                   Heat Barrier
                 </button>
                 <button
                   onClick={() => { setTestMode('buoyancy'); setIsTestRunning(false); setTestResult(''); }}
-                  className={`flex-1 px-2.5 py-1 rounded-lg font-medium text-[10px] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  className={`px-1.5 py-1.5 rounded-lg font-bold text-[9px] sm:text-[10px] flex items-center justify-center gap-1 transition-all cursor-pointer ${
                     testMode === 'buoyancy'
-                      ? 'bg-sky-950/60 text-sky-200 border border-sky-850'
-                      : 'text-stone-400 hover:text-stone-200 border border-transparent'
+                      ? 'bg-sky-100 text-sky-850 border border-sky-200'
+                      : 'text-stone-553 hover:text-stone-800 border border-transparent'
                   }`}
                 >
-                  <Droplet className="w-3.5 h-3.5 text-sky-400" />
-                  Float Test (Density)
+                  <Droplet className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-sky-600" />
+                  Float Test
                 </button>
                 <button
                   onClick={() => { setTestMode('load'); setIsTestRunning(false); setTestResult(''); }}
-                  className={`flex-1 px-2.5 py-1 rounded-lg font-medium text-[10px] flex items-center justify-center gap-1.5 transition-all cursor-pointer ${
+                  className={`px-1.5 py-1.5 rounded-lg font-bold text-[9px] sm:text-[10px] flex items-center justify-center gap-1 transition-all cursor-pointer ${
                     testMode === 'load'
-                      ? 'bg-green-950/60 text-green-200 border border-green-850'
-                      : 'text-stone-400 hover:text-stone-200 border border-transparent'
+                      ? 'bg-green-100 text-green-800 border border-green-200'
+                      : 'text-stone-553 hover:text-stone-800 border border-transparent'
                   }`}
                 >
-                  <Scale className="w-3.5 h-3.5 text-emerald-400" />
-                  Load Resistance
+                  <Scale className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-700" />
+                  Load Limit
                 </button>
               </div>
-
+  
               {/* Sub Action Controller */}
-              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2.5 pt-1 border-t border-stone-850">
+              <div className="flex flex-col sm:flex-row items-center sm:justify-between gap-2 pt-1 border-t border-stone-200">
                 <div className="text-left w-full sm:w-auto">
-                  <span className="text-[9px] font-semibold text-stone-500 font-mono block uppercase">
+                  <span className="text-[8px] sm:text-[9px] font-bold text-stone-500 font-mono block uppercase leading-none">
                     Physical Parameters side-by-side
                   </span>
-                  <span className="text-xs font-bold text-stone-200 flex items-center gap-1">
-                    <span className="text-red-450">Red Clay Brick (Left)</span>
-                    <span className="text-stone-600">vs</span>
-                    <span className="text-green-400">Swift Eco Blox (Right)</span>
+                  <span className="text-[10px] sm:text-xs font-bold text-stone-850 flex items-center gap-1 mt-0.5">
+                    <span className="text-red-650">Red Clay Brick (Left)</span>
+                    <span className="text-stone-400">vs</span>
+                    <span className="text-green-650">Swift Eco Blox (Right)</span>
                   </span>
                 </div>
-
+  
                 <button
                   onClick={handleRunPhysicsTest}
                   disabled={isTestRunning}
-                  className="w-full sm:w-auto px-4 py-2 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white font-bold text-xs rounded-lg flex items-center justify-center gap-1.5 transition-all active:scale-95 border border-green-500/20 shadow-md shadow-green-900/10 cursor-pointer"
+                  className="w-full sm:w-auto px-3.5 py-1.5 sm:px-4 sm:py-2 bg-green-600 hover:bg-green-500 disabled:opacity-50 text-white font-bold text-[10px] sm:text-xs rounded-lg sm:rounded-xl flex items-center justify-center gap-1.5 transition-all active:scale-95 border border-green-500/20 shadow-sm cursor-pointer"
                 >
                   {isTestRunning ? (
                     <>
-                      <span className="w-3 h-3 border-2 border-stone-300 border-t-green-900 rounded-full animate-spin" />
-                      Running Simulation...
+                      <span className="w-3 h-3 border-2 border-stone-300 border-t-green-600 rounded-full animate-spin" />
+                      Running...
                     </>
                   ) : (
                     <>
                       Run Lab Test
-                      <ArrowRight className="w-3.5 h-3.5" />
+                      <ArrowRight className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                     </>
                   )}
                 </button>
               </div>
-
+  
               {/* Simulated Results */}
               {testResult && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
                   animate={{ opacity: 1, height: 'auto' }}
                   exit={{ opacity: 0, height: 0 }}
-                  className="bg-stone-900/60 p-2 rounded-lg border border-stone-800 text-[10px] text-stone-350 leading-relaxed flex items-start gap-1.5"
+                  className="bg-green-50/50 p-2 sm:p-2.5 rounded-lg border border-green-100 text-[9px] sm:text-[10px] text-stone-600 leading-relaxed flex items-start gap-1.5 shadow-xs"
                 >
-                  <Info className="w-3.5 h-3.5 text-blue-450 shrink-0 mt-0.5" />
+                  <Info className="w-3 h-3 sm:w-3.5 sm:h-3.5 text-green-600 shrink-0 mt-0.5" />
                   <span>
-                    <strong className="text-white font-semibold">Scientific Result:</strong> Swift Eco Blox validates
+                    <strong className="text-stone-900 font-bold">Scientific Result:</strong> Swift Eco Blox validates
                     {testResult}
                   </span>
                 </motion.div>
               )}
-
+  
             </motion.div>
           )}
-
+ 
         </AnimatePresence>
-
+ 
       </div>
-
+ 
     </div>
   );
 }
