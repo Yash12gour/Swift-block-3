@@ -34,6 +34,7 @@ import Footer from './components/Footer';
 import About from './components/About';
 import Background3D from './components/Background3D';
 import FactorySlider from './components/FactorySlider';
+import WhatsAppChat from './components/WhatsAppChat';
 
 export default function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -432,6 +433,9 @@ export default function App() {
 
       {/* RICH BRAND PORTAL & CONTACT INFO FOOTER */}
       <Footer />
+
+      {/* INTELLIGENT CUSTOMER SUPPORT PORTAL CLICK TO CHAT */}
+      <WhatsAppChat />
 
     </div>
   );
